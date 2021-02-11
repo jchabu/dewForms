@@ -1,0 +1,32 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #E5E5E5;
+}
+h1 {
+    padding: 10px;
+}
+.cabecero {
+    margin-top: 40px;
+    font-weight: 700;
+}
+.fila {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.underline {
+    border-bottom: 4px solid black;
+}
+
+.formulario {
+    border: 1px solid black;
+    padding-bottom: 30px;
+}
+
+.valido, .valido:focus, .valido:hover{
+    border: 2px solid green;
+}
+
+.invalido, .invalido:hover, .invalido:focus {
+    border: 2px solid red;
+}
+
