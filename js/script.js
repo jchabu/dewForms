@@ -4,7 +4,7 @@ const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input');
 const selects = document.querySelectorAll('#formulario select');
 const checkboxPassword = document.getElementById('showPass');
-
+const botonEnviar = document.getElementsByClassName('enviar')[0];
 
 const expresiones = {
     usuario: /^[a-zA-Z0-9\_]{4,16}$/,
@@ -29,12 +29,7 @@ const campos = {
     numDocumentacion: false,
     tipoCuenta: false,
     nacimiento: false,
-    musica: false,
-    deporte: false,
-    videojuegos: false,
-    manualidades: false,
-    artes: false,
-    lectura: false,
+    checkbox: false,
     titulo: false,
     descripcion: false,
     canal: false
@@ -69,19 +64,54 @@ const validarFormulario = (e) => {
             validarDocumentacion(expresiones.dni, expresiones.nie, e.target, 'numDocumentacion');
             break;
         case "cuenta":
-            
+            var radio = $('input[type=radio]:checked').length;
+            if (radio == 1) {
+                campos[tipoCuenta] = true;
+            } else {
+                campos[tipoCuenta] = false;
+            }
             break;
-        case "telefono":
-
+        case "checkbox":
+            var checked = $('input[type=checkbox]:checked').length;
+            if (checked >= 2) {
+                campos['checkbox'] = true;
+            } else if (checked < 2) {
+                campos['checkbox'] = false;
+            };
             break;
-        case "telefono":
-
+        case "nacimiento":
+            var fechaHoy = new Date;
+            fechaHoy = fechaHoy.getFullYear();
+            if ((fechaHoy - e.target.value) >= 18) {
+                campos[nacimiento] = true;
+            } else {
+                campos[nacimiento] = false;
+            }
             break;
-        case "telefono":
-
-            break;
-        case "telefono":
-
+        case "canal":
+            var iconoCanal = document.getElementsByClassName('icono')[0];
+            if (e.target.value.includes("twitch")) {
+                iconoCanal.classList.remove('fas')
+                iconoCanal.classList.remove('fa-question-circle')
+                iconoCanal.classList.remove('fab')
+                iconoCanal.classList.remove('fa-youtube')
+                iconoCanal.classList.add('fab')
+                iconoCanal.classList.add('fa-twitch')
+            } else if (e.target.value.includes("youtube")) {
+                iconoCanal.classList.remove('fas')
+                iconoCanal.classList.remove('fa-question-circle')
+                iconoCanal.classList.remove('fab')
+                iconoCanal.classList.remove('fa-twitch')
+                iconoCanal.classList.add('fab')
+                iconoCanal.classList.add('fa-youtube')
+            } else {
+                iconoCanal.classList.remove('fab')
+                iconoCanal.classList.remove('fa-youtube')
+                iconoCanal.classList.remove('fab')
+                iconoCanal.classList.remove('fa-twitch')
+                iconoCanal.classList.add('fas')
+                iconoCanal.classList.add('fa-question-circle')
+            }
             break;
     }
 }
@@ -194,6 +224,47 @@ selects.forEach((select) => {
 
 checkboxPassword.addEventListener('click', showPassword);
 
-formulario.addEventListener('submit', (evento) => {
-    evento.preventDefault();
+botonEnviar.addEventListener('click', function () {
+    if (comprobarCampos()) {
+        crearOutput();
+        resetearInputsValue();
+        resetearInputs();
+    }
 });
+
+function comprobarCampos() {
+    var error = false;
+    for (const campo in campos) {
+        if (campos[campo] == false) {
+            error = true;
+        }
+    }
+    if (error === true) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+function resetearInputs() {
+    var inputs = formulario.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.classList.remove('invalido');
+        input.classList.remove('valido');
+    })
+}
+
+function resetearInputsValue() {
+    var inputs = formulario.querySelectorAll('input');
+    inputs.forEach(input => {
+        input.value = "";
+        input.checked = false;
+        input.defaultValue = input.defaultValue;
+    })
+}
+
+function crearOutput() {
+    var username = document.getElementById('nombre').value;
+    var password = document.getElementById('password').value;
+    
+}
