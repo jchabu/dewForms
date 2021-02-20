@@ -2,13 +2,20 @@ import { existingUserNames } from './userNames.js';
 
 const formulario = document.getElementById('formulario');
 const inputs = document.querySelectorAll('#formulario input');
+const selects = document.querySelectorAll('#formulario select');
+const checkboxPassword = document.getElementById('showPass');
+
 
 const expresiones = {
     usuario: /^[a-zA-Z0-9\_]{4,16}$/,
-    nombre: /^[a-zA-ZÀ-ÿ\s]{1,32}$/, 
-    password: /^.{6,}$/, 
+    nombre: /^[a-zA-ZÀ-ÿ ]{1,32}$/,
+    apellidos: /^[a-zA-ZÀ-ÿ ]{1,32}$/,
+    password: /^.{6,}$/,
     telefono: /^\d{9}$/,
-    codpostal: /^[3][8][0-9]{5}$/
+    telefono2: /^[(][+][3][4][)][0-9]{9}$/,
+    codpostal: /^[3][8][0-9]{3}$/,
+    dni: /^[0-9]{8}[a-zA-Z]$/,
+    nie: /^[ZYX][0-9]{7}[a-zA-Z]$/
 }
 
 const campos = {
@@ -20,7 +27,7 @@ const campos = {
     codpostal: false,
     docuemtacion: false,
     numDocumentacion: false,
-    cuenta: false,
+    tipoCuenta: false,
     nacimiento: false,
     musica: false,
     deporte: false,
@@ -36,68 +43,157 @@ const campos = {
 
 
 const validarFormulario = (e) => {
-    switch (e.target.name){
+    switch (e.target.name) {
         case "usuario":
-           
-        break;
+            validarUsuario(expresiones.usuario, e.target, 'usuario');
+            break;
         case "nombre":
             validarCampo(expresiones.nombre, e.target, 'nombre');
-        break;
+            break;
         case "apellidos":
-
-        break;
+            validarCampo(expresiones.apellidos, e.target, 'apellidos');
+            break;
         case "password":
             validarCampo(expresiones.password, e.target, 'password');
-        break;
+            break;
         case "telefono":
-            validarCampo(expresiones.telefono, e.target, 'telefono');
-        break;
+            validarTelefono(expresiones.telefono, expresiones.telefono2, e.target, 'telefono');
+            break;
         case "codpostal":
             validarCampo(expresiones.codpostal, e.target, 'codpostal');
-        break;
+            break;
         case "documentacion":
-            
-        break;
+            seleccionDNI(e.target, 'documentacion');
+            break;
         case "numDocumentacion":
-            
-        break;
+            validarDocumentacion(expresiones.dni, expresiones.nie, e.target, 'numDocumentacion');
+            break;
         case "cuenta":
+            
+            break;
+        case "telefono":
 
-        break;
+            break;
         case "telefono":
-            
-        break;
+
+            break;
         case "telefono":
-            
-        break;
+
+            break;
         case "telefono":
-            
-        break;
-        case "telefono":
-            
-        break;
+
+            break;
     }
 }
 
 const validarCampo = (expresion, input, campo) => {
-    if (expresion.test(input.value)){
+    if (expresion.test(input.value)) {
         document.getElementById(`${campo}`).classList.remove('invalido');
         document.getElementById(`${campo}`).classList.add('valido');
         campos[campo] = true;
     }
-    else{
+    else {
         document.getElementById(`${campo}`).classList.remove('valido');
         document.getElementById(`${campo}`).classList.add('invalido');
         campos[campo] = false;
     }
 }
 
-inputs.forEach((input) =>{
+const validarUsuario = (expresion, input, campo) => {
+    var usuario = document.getElementById(`${campo}`).value;
+    existingUserNames.forEach(user => {
+        if (expresion.test(input.value)) {
+            if (user.userName.includes(usuario)) {
+                document.getElementById(`${campo}`).classList.remove('invalido');
+                document.getElementById(`${campo}`).classList.add('valido');
+                campos[campo] = true;
+            }
+        } else {
+            document.getElementById(`${campo}`).classList.remove('valido');
+            document.getElementById(`${campo}`).classList.add('invalido');
+            campos[campo] = false;
+        }
+    })
+}
+
+const validarTelefono = (expresion, expresionDos, input, campo) => {
+    if (expresion.test(input.value)) {
+        document.getElementById(`${campo}`).classList.remove('invalido');
+        document.getElementById(`${campo}`).classList.add('valido');
+        campos[campo] = true;
+    }
+    else {
+        if (expresionDos.test(input.value)) {
+            document.getElementById(`${campo}`).classList.remove('invalido');
+            document.getElementById(`${campo}`).classList.add('valido');
+            campos[campo] = true;
+        } else {
+            document.getElementById(`${campo}`).classList.remove('valido');
+            document.getElementById(`${campo}`).classList.add('invalido');
+            campos[campo] = false;
+        }
+    }
+}
+
+const seleccionDNI = (input, campo) => {
+    if (input.value === "DNI" || input.value === "NIE") {
+        document.getElementById(`${campo}`).classList.remove('invalido');
+        document.getElementById(`${campo}`).classList.add('valido');
+        document.getElementById("numDocumentacion").disabled = false;
+        campos[campo] = true;
+    } else {
+        document.getElementById(`${campo}`).classList.remove('valido');
+        document.getElementById(`${campo}`).classList.add('invalido');
+        document.getElementById("numDocumentacion").disabled = true;
+        campos[campo] = false;
+    }
+}
+
+const validarDocumentacion = (expresionDNI, expresionNIE, input, campo) => {
+    var documento = document.getElementById('documentacion').value;
+    if (documento === "DNI") {
+        if (expresionDNI.test(input.value)) {
+            document.getElementById(`${campo}`).classList.remove('invalido');
+            document.getElementById(`${campo}`).classList.add('valido');
+            campos[campo] = true;
+        } else {
+            document.getElementById(`${campo}`).classList.remove('valido');
+            document.getElementById(`${campo}`).classList.add('invalido');
+            campos[campo] = false;
+        }
+    } else {
+        if (expresionNIE.test(input.value)) {
+            document.getElementById(`${campo}`).classList.remove('invalido');
+            document.getElementById(`${campo}`).classList.add('valido');
+            campos[campo] = true;
+        } else {
+            document.getElementById(`${campo}`).classList.remove('valido');
+            document.getElementById(`${campo}`).classList.add('invalido');
+            campos[campo] = false;
+        }
+    }
+};
+
+function showPassword() {
+    var input = document.getElementById("password");
+    if (input.type === "password") {
+        input.type = "text";
+    } else {
+        input.type = "password";
+    }
+}
+
+
+inputs.forEach((input) => {
     input.addEventListener('keyup', validarFormulario);
     input.addEventListener('blur', validarFormulario);
 });
+selects.forEach((select) => {
+    select.addEventListener('focusout', validarFormulario);
+})
+
+checkboxPassword.addEventListener('click', showPassword);
 
 formulario.addEventListener('submit', (evento) => {
     evento.preventDefault();
 });
-

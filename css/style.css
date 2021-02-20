@@ -16,7 +16,9 @@ h1 {
 .underline {
     border-bottom: 4px solid black;
 }
-
+input[type=checkbox], input[type=radio]{
+    margin-right: 10px;
+}
 .formulario {
     border: 1px solid black;
     padding-bottom: 30px;
@@ -29,4 +31,22 @@ h1 {
 .invalido, .invalido:hover, .invalido:focus {
     border: 2px solid red;
 }
+select[id=documentacion]{
+    width: 100px;
+}
 
+input[id=showPass]{
+    margin-right: 10px;
+}
+
+.error {
+    color: red;
+}
+.oculto {
+    display: none;
+}
+
+.aficiones {
+    display: flex;
+    justify-content: space-between;
+}
