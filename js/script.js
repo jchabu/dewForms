@@ -7,8 +7,8 @@ const campos = {
     nombre: false,
     apellidos: false,
     telefono: false,
-    codpostal: false,
-    docuemtacion: false,
+    codPostal: false,
+    documentacion: false,
     numDocumentacion: false,
     tipoCuenta: false,
     nacimiento: false,
@@ -34,6 +34,7 @@ var inputTitulo = document.getElementById('titulo');
 var inputDescripcion = document.getElementById('descripcion');
 var inputCanal = document.getElementById('canal');
 var contenedorEdad = document.getElementsByClassName('nacimiento')[0];
+var iconoCanal = document.getElementsByClassName('icono')[0];
 
 /**
  * Para rellenar el select de edades
@@ -172,31 +173,51 @@ inputCanal.addEventListener('blur', function () {
     validarCanal(inputCanal, 'canal', 'error-canal', 'error-url');
 })
 
+
+/**
+ * Función para validar al usuario
+ */
 function validarUsuario() {
+    var errorUser = document.getElementsByClassName('error-usuario')[0];
     existingUserNames.forEach(user => {
         if (inputUsuario.value.includes(user.userName)) {
             if (inputUsuario.validity.patternMismatch) {
                 inputUsuario.classList.remove('valido');
                 inputUsuario.classList.add('invalido');
-                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+                document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
+                errorUser.innerHTML = 'Solo puede contener números, letras y _';
+                campos['usuario'] = false;
             } else if (inputUsuario.validity.rangeOverflow) {
                 inputUsuario.classList.remove('valido');
                 inputUsuario.classList.add('invalido');
-                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+                document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
+                errorUser.innerHTML = 'Debe tener entre 4 y 20 caracteres';
+                campos['usuario'] = false;
             } else if (inputUsuario.validity.rangeUnderflow) {
                 inputUsuario.classList.remove('valido');
                 inputUsuario.classList.add('invalido');
-                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+                document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
+                errorUser.innerHTML = 'Debe tener entre 4 y 20 caracteres';
+                campos['usuario'] = false;
+            } else if (inputUsuario.value === user.userName) {
+                inputUsuario.classList.remove('valido');
+                inputUsuario.classList.add('invalido');
+                document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
+                errorUser.innerHTML = 'El usuario ya existe';
+                campos['usuario'] = false;
             } else {
                 inputUsuario.classList.remove('invalido');
                 inputUsuario.classList.add('valido');
                 document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+                campos['usuario'] = true;
             }
         }
     })
     if (inputUsuario.value === '') {
         inputUsuario.classList.remove('valido');
         inputUsuario.classList.add('invalido');
+        errorUser.innerHTML = 'Campo obligatorio';
+        campos['usuario'] = false;
         document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
     }
 };
@@ -304,7 +325,6 @@ function validarAficiones(campo, error) {
 }
 
 function validarCanal(contenedor, campo, errorRequired, errorUrl) {
-    var iconoCanal = document.getElementsByClassName('icono')[0];
     if (contenedor.value.includes("https://www.twitch.tv/")) {
         iconoCanal.classList.remove('fas')
         iconoCanal.classList.remove('fa-question-circle')
@@ -357,7 +377,7 @@ function validarCanal(contenedor, campo, errorRequired, errorUrl) {
         contenedor.classList.add('invalido');
         campos[campo] = false;
         document.getElementsByClassName(errorRequired)[0].classList.add('oculto');
-        document.getElementsByClassName(errorUrl)[0].classList.remove('oculto');    
+        document.getElementsByClassName(errorUrl)[0].classList.remove('oculto');
     }
 }
 
@@ -371,18 +391,25 @@ botonEnviar.addEventListener('click', function () {
     validarCampo(inputCodPostal, 'codPostal', 'error-codPostal');
     seleccionDNI(selectDocumentacion, 'documentacion', 'error-dni');
     validarCampo(inputDocumentacion, 'numDocumentacion', 'error-dni');
-    
+    validarEdad(selectNacimiento, 'nacimiento', 'error-nacimiento');
+    validarAficiones('checkbox', 'error-aficiones');
+    validarCampo(inputTitulo, 'titulo', 'error-titulo');
+    validarCampo(inputDescripcion, 'descripcion', 'error-descripcion');
+    validarCanal(inputCanal, 'canal', 'error-canal', 'error-url');
     if (comprobarCampos()) {
         crearOutput();
+        formulario.reset();
         resetearInputsValue();
         resetearInputs();
     }
 });
 
+
 function comprobarCampos() {
     var error = false;
-    for (const campo in campos) {
-        if (campos[campo] == false) {
+
+    for (var campo in campos) {
+        if (campos[campo] === false) {
             error = true;
         }
     }
@@ -399,6 +426,19 @@ function resetearInputs() {
         input.classList.remove('invalido');
         input.classList.remove('valido');
     })
+    inputDescripcion.classList.remove('valido');
+    inputDescripcion.classList.remove('invalido');
+    selectNacimiento.classList.remove('valido');
+    selectNacimiento.classList.remove('invalido');
+    selectDocumentacion.classList.remove('valido');
+    selectDocumentacion.classList.remove('invalido');
+    iconoCanal.classList.remove('fab')
+    iconoCanal.classList.remove('fa-youtube')
+    iconoCanal.classList.remove('fa-twitch')
+    iconoCanal.classList.remove('fa-instagram')
+    iconoCanal.classList.remove('fa-instagram')
+    iconoCanal.classList.add('fas')
+    iconoCanal.classList.add('fa-question-circle')
 }
 
 function resetearInputsValue() {
@@ -408,8 +448,62 @@ function resetearInputsValue() {
         input.checked = false;
         input.defaultValue = input.defaultValue;
     })
+    inputDescripcion.value = "";
+    inputDescripcion.checked = false;
 }
 
 function crearOutput() {
+    var contenedorOutput = document.getElementsByClassName('output')[0];
+    var tipoCuenta = document.querySelectorAll('input[name=tipoCuenta]:checked')[0];
+    var fechaHoy = new Date
+    fechaHoy = fechaHoy.getFullYear();
+    var edad = fechaHoy - selectNacimiento.value;
+    var aficiones = document.querySelectorAll('input[type=checkbox]:checked');
 
+
+    contenedorOutput.removeChild(contenedorOutput.lastChild);
+    contenedorOutput.appendChild(createNode("div", "", [], []));
+    contenedorOutput.lastChild.appendChild(createNode("h1", "Datos Usuario", ["underline"], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "userName: " + inputUsuario.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Password: " + inputPassword.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("h1", "Datos Personales", ["underline"], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Nombre: " + inputNombre.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Apellidos: " + inputApellidos.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Teléfono: " + inputTelefono.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Código Postal: " + inputCodPostal.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", selectDocumentacion.value + ": " + inputDocumentacion.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Tipo cuenta: " + tipoCuenta.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Tipo cuenta: " + tipoCuenta.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Edad del usuario: " + edad, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Aficiones del usuario: ", [], []));
+    contenedorOutput.lastChild.appendChild(createNode("ul", "", [], []));
+    aficiones.forEach(aficion => {
+        contenedorOutput.lastChild.lastChild.appendChild(createNode("li", aficion.id, [], []));
+    });
+    contenedorOutput.lastChild.appendChild(createNode("h1", "Datos Publicación", ["underline"], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Titulo: " + inputTitulo.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Descripción: " + inputDescripcion.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode("p", "Canal: ", [], []));
+    contenedorOutput.lastChild.lastChild.appendChild(createNode("a", inputCanal.value, [], [{ name: 'src', value: 'inputCanal.value' }]))
+}
+
+function createNode(name, content, classes, attributes) {
+    var node = document.createElement(name);
+
+    if (content != "") {
+        var nodeContent = document.createTextNode(content);
+        node.appendChild(nodeContent);
+    }
+    if (classes.length > 0) {
+        classes.forEach(classElement => {
+            node.classList.add(classElement);
+        });
+    }
+
+    if (attributes.length > 0) {
+        attributes.forEach(nodeAttribute => {
+            node.setAttribute(nodeAttribute.name, nodeAttribute.value);
+        })
+    }
+    return node;
 }
