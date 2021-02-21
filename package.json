@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/jchabu/dewForms/issues"
   },
-  "homepage": "https://github.com/jchabu/dewForms#readme"
+  "homepage": "https://github.com/jchabu/dewForms#readme",
+  "devDependencies": {
+    "eslint": "^7.20.0",
+    "eslint-plugin-import": "^2.22.1"
+  }
 }
