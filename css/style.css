@@ -41,6 +41,7 @@ input[id=showPass]{
 
 .error {
     color: red;
+    font-size: x-small;
 }
 .oculto {
     display: none;

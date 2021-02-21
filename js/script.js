@@ -1,23 +1,6 @@
 import { existingUserNames } from './userNames.js';
 
 const formulario = document.getElementById('formulario');
-const inputs = document.querySelectorAll('#formulario input');
-const selects = document.querySelectorAll('#formulario select');
-const checkboxPassword = document.getElementById('showPass');
-const botonEnviar = document.getElementsByClassName('enviar')[0];
-
-const expresiones = {
-    usuario: /^[a-zA-Z0-9\_]{4,16}$/,
-    nombre: /^[a-zA-ZÀ-ÿ ]{1,32}$/,
-    apellidos: /^[a-zA-ZÀ-ÿ ]{1,32}$/,
-    password: /^.{6,}$/,
-    telefono: /^\d{9}$/,
-    telefono2: /^[(][+][3][4][)][0-9]{9}$/,
-    codpostal: /^[3][8][0-9]{3}$/,
-    dni: /^[0-9]{8}[a-zA-Z]$/,
-    nie: /^[ZYX][0-9]{7}[a-zA-Z]$/
-}
-
 const campos = {
     usuario: false,
     password: false,
@@ -35,172 +18,186 @@ const campos = {
     canal: false
 }
 
+var inputUsuario = document.getElementById('usuario');
+var inputPassword = document.getElementById('password');
+var inputNombre = document.getElementById('nombre');
+var inputApellidos = document.getElementById('apellidos');
+var inputTelefono = document.getElementById('telefono');
+var inputCodPostal = document.getElementById('codpostal');
+var selectDocumentacion = document.getElementById('documentacion');
+var inputDocumentacion = document.getElementById('numDocumentacion');
+var selectNacimiento = document.getElementById('nacimiento');
+var checkboxes = document.querySelectorAll('input[type=checkbox]');
+var checkboxPassword = document.getElementById('showPass');
+var botonEnviar = document.getElementsByClassName('enviar')[0];
+var inputTitulo = document.getElementById('titulo');
+var inputDescripcion = document.getElementById('descripcion');
+var inputCanal = document.getElementById('canal');
+var contenedorEdad = document.getElementsByClassName('nacimiento')[0];
 
-
-const validarFormulario = (e) => {
-    switch (e.target.name) {
-        case "usuario":
-            validarUsuario(expresiones.usuario, e.target, 'usuario');
-            break;
-        case "nombre":
-            validarCampo(expresiones.nombre, e.target, 'nombre');
-            break;
-        case "apellidos":
-            validarCampo(expresiones.apellidos, e.target, 'apellidos');
-            break;
-        case "password":
-            validarCampo(expresiones.password, e.target, 'password');
-            break;
-        case "telefono":
-            validarTelefono(expresiones.telefono, expresiones.telefono2, e.target, 'telefono');
-            break;
-        case "codpostal":
-            validarCampo(expresiones.codpostal, e.target, 'codpostal');
-            break;
-        case "documentacion":
-            seleccionDNI(e.target, 'documentacion');
-            break;
-        case "numDocumentacion":
-            validarDocumentacion(expresiones.dni, expresiones.nie, e.target, 'numDocumentacion');
-            break;
-        case "cuenta":
-            var radio = $('input[type=radio]:checked').length;
-            if (radio == 1) {
-                campos[tipoCuenta] = true;
-            } else {
-                campos[tipoCuenta] = false;
-            }
-            break;
-        case "checkbox":
-            var checked = $('input[type=checkbox]:checked').length;
-            if (checked >= 2) {
-                campos['checkbox'] = true;
-            } else if (checked < 2) {
-                campos['checkbox'] = false;
-            };
-            break;
-        case "nacimiento":
-            var fechaHoy = new Date;
-            fechaHoy = fechaHoy.getFullYear();
-            if ((fechaHoy - e.target.value) >= 18) {
-                campos[nacimiento] = true;
-            } else {
-                campos[nacimiento] = false;
-            }
-            break;
-        case "canal":
-            var iconoCanal = document.getElementsByClassName('icono')[0];
-            if (e.target.value.includes("twitch")) {
-                iconoCanal.classList.remove('fas')
-                iconoCanal.classList.remove('fa-question-circle')
-                iconoCanal.classList.remove('fab')
-                iconoCanal.classList.remove('fa-youtube')
-                iconoCanal.classList.add('fab')
-                iconoCanal.classList.add('fa-twitch')
-            } else if (e.target.value.includes("youtube")) {
-                iconoCanal.classList.remove('fas')
-                iconoCanal.classList.remove('fa-question-circle')
-                iconoCanal.classList.remove('fab')
-                iconoCanal.classList.remove('fa-twitch')
-                iconoCanal.classList.add('fab')
-                iconoCanal.classList.add('fa-youtube')
-            } else {
-                iconoCanal.classList.remove('fab')
-                iconoCanal.classList.remove('fa-youtube')
-                iconoCanal.classList.remove('fab')
-                iconoCanal.classList.remove('fa-twitch')
-                iconoCanal.classList.add('fas')
-                iconoCanal.classList.add('fa-question-circle')
-            }
-            break;
-    }
+/**
+ * Para rellenar el select de edades
+ */
+for (var i = 2010; i >= 1930; i--) {
+    // create option element
+    var option = document.createElement('option');
+    // add value and text name
+    option.value = i;
+    option.innerHTML = i;
+    // add the option element to the selectbox
+    contenedorEdad.appendChild(option);
 }
 
-const validarCampo = (expresion, input, campo) => {
-    if (expresion.test(input.value)) {
-        document.getElementById(`${campo}`).classList.remove('invalido');
-        document.getElementById(`${campo}`).classList.add('valido');
-        campos[campo] = true;
-    }
-    else {
-        document.getElementById(`${campo}`).classList.remove('valido');
-        document.getElementById(`${campo}`).classList.add('invalido');
-        campos[campo] = false;
-    }
-}
+/**
+ * Listeners de usuario
+ */
+inputUsuario.addEventListener('input', validarUsuario);
+inputUsuario.addEventListener('blur', validarUsuario);
 
-const validarUsuario = (expresion, input, campo) => {
-    var usuario = document.getElementById(`${campo}`).value;
+/**
+ * Listeners de contraseña
+ */
+inputPassword.addEventListener('input', function () {
+    validarCampo(inputPassword, 'password', 'error-password');
+});
+inputPassword.addEventListener('blur', function () {
+    validarCampo(inputPassword, 'password', 'error-password');
+});
+checkboxPassword.addEventListener('click', showPassword);
+
+/**
+ * Listeners de Nombre
+ */
+inputNombre.addEventListener('input', function () {
+    validarCampo(inputNombre, 'nombre', 'error-nombre');
+})
+inputNombre.addEventListener('blur', function () {
+    validarCampo(inputNombre, 'nombre', 'error-nombre');
+})
+
+/**
+ * Listeners de apellidos
+ */
+inputApellidos.addEventListener('input', function () {
+    validarCampo(inputApellidos, 'apellidos', 'error-apellidos');
+})
+inputApellidos.addEventListener('blur', function () {
+    validarCampo(inputApellidos, 'nombre', 'error-apellidos');
+})
+
+/**
+ * Listeners de telefono
+ */
+inputTelefono.addEventListener('input', function () {
+    validarCampo(inputTelefono, 'telefono', 'error-telefono');
+})
+inputTelefono.addEventListener('blur', function () {
+    validarCampo(inputTelefono, 'telefono', 'error-telefono');
+})
+
+/**
+ * Listeners de codPostal
+ */
+inputCodPostal.addEventListener('input', function () {
+    validarCampo(inputCodPostal, 'codPostal', 'error-codPostal');
+})
+inputCodPostal.addEventListener('blur', function () {
+    validarCampo(inputCodPostal, 'codPostal', 'error-codPostal');
+})
+
+/**
+ * Listeners de documento de identificación
+ */
+selectDocumentacion.addEventListener('change', function () {
+    seleccionDNI(selectDocumentacion, 'documentacion', 'error-dni');
+})
+selectDocumentacion.addEventListener('blur', function () {
+    seleccionDNI(selectDocumentacion, 'documentacion', 'error-dni');
+})
+inputDocumentacion.addEventListener('input', function () {
+    validarCampo(inputDocumentacion, 'numDocumentacion', 'error-dni');
+})
+inputDocumentacion.addEventListener('blur', function () {
+    validarCampo(inputDocumentacion, 'numDocumentacion', 'error-dni');
+})
+
+/**
+ * Listeners de edad
+ */
+selectNacimiento.addEventListener('change', function () {
+    validarEdad(selectNacimiento, 'nacimiento', 'error-nacimiento');
+})
+selectNacimiento.addEventListener('blur', function () {
+    validarEdad(selectNacimiento, 'nacimiento', 'error-nacimiento');
+})
+
+/**
+ * Listener checkboxes
+ */
+
+checkboxes.forEach(check => {
+    check.addEventListener('change', function () {
+        validarAficiones('checkbox', 'error-aficiones');
+    });
+});
+
+/**
+ * Listeners titulo
+ */
+inputTitulo.addEventListener('input', function () {
+    validarCampo(inputTitulo, 'titulo', 'error-titulo');
+})
+inputTitulo.addEventListener('blur', function () {
+    validarCampo(inputTitulo, 'titulo', 'error-titulo');
+})
+
+/**
+ * Listeners descripcion
+ */
+inputDescripcion.addEventListener('input', function () {
+    validarCampo(inputDescripcion, 'descripcion', 'error-descripcion');
+})
+inputDescripcion.addEventListener('blur', function () {
+    validarCampo(inputDescripcion, 'descripcion', 'error-descripcion');
+})
+
+/**
+ * Listeners canal
+ */
+
+inputCanal.addEventListener('input', function () {
+    validarCanal(inputCanal, 'canal', 'error-canal', 'error-url');
+})
+inputCanal.addEventListener('blur', function () {
+    validarCanal(inputCanal, 'canal', 'error-canal', 'error-url');
+})
+
+function validarUsuario() {
     existingUserNames.forEach(user => {
-        if (expresion.test(input.value)) {
-            if (user.userName.includes(usuario)) {
-                document.getElementById(`${campo}`).classList.remove('invalido');
-                document.getElementById(`${campo}`).classList.add('valido');
-                campos[campo] = true;
+        if (inputUsuario.value.includes(user.userName)) {
+            if (inputUsuario.validity.patternMismatch) {
+                inputUsuario.classList.remove('valido');
+                inputUsuario.classList.add('invalido');
+                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+            } else if (inputUsuario.validity.rangeOverflow) {
+                inputUsuario.classList.remove('valido');
+                inputUsuario.classList.add('invalido');
+                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+            } else if (inputUsuario.validity.rangeUnderflow) {
+                inputUsuario.classList.remove('valido');
+                inputUsuario.classList.add('invalido');
+                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
+            } else {
+                inputUsuario.classList.remove('invalido');
+                inputUsuario.classList.add('valido');
+                document.getElementsByClassName('error-usuario')[0].classList.add('oculto');
             }
-        } else {
-            document.getElementById(`${campo}`).classList.remove('valido');
-            document.getElementById(`${campo}`).classList.add('invalido');
-            campos[campo] = false;
         }
     })
-}
-
-const validarTelefono = (expresion, expresionDos, input, campo) => {
-    if (expresion.test(input.value)) {
-        document.getElementById(`${campo}`).classList.remove('invalido');
-        document.getElementById(`${campo}`).classList.add('valido');
-        campos[campo] = true;
-    }
-    else {
-        if (expresionDos.test(input.value)) {
-            document.getElementById(`${campo}`).classList.remove('invalido');
-            document.getElementById(`${campo}`).classList.add('valido');
-            campos[campo] = true;
-        } else {
-            document.getElementById(`${campo}`).classList.remove('valido');
-            document.getElementById(`${campo}`).classList.add('invalido');
-            campos[campo] = false;
-        }
-    }
-}
-
-const seleccionDNI = (input, campo) => {
-    if (input.value === "DNI" || input.value === "NIE") {
-        document.getElementById(`${campo}`).classList.remove('invalido');
-        document.getElementById(`${campo}`).classList.add('valido');
-        document.getElementById("numDocumentacion").disabled = false;
-        campos[campo] = true;
-    } else {
-        document.getElementById(`${campo}`).classList.remove('valido');
-        document.getElementById(`${campo}`).classList.add('invalido');
-        document.getElementById("numDocumentacion").disabled = true;
-        campos[campo] = false;
-    }
-}
-
-const validarDocumentacion = (expresionDNI, expresionNIE, input, campo) => {
-    var documento = document.getElementById('documentacion').value;
-    if (documento === "DNI") {
-        if (expresionDNI.test(input.value)) {
-            document.getElementById(`${campo}`).classList.remove('invalido');
-            document.getElementById(`${campo}`).classList.add('valido');
-            campos[campo] = true;
-        } else {
-            document.getElementById(`${campo}`).classList.remove('valido');
-            document.getElementById(`${campo}`).classList.add('invalido');
-            campos[campo] = false;
-        }
-    } else {
-        if (expresionNIE.test(input.value)) {
-            document.getElementById(`${campo}`).classList.remove('invalido');
-            document.getElementById(`${campo}`).classList.add('valido');
-            campos[campo] = true;
-        } else {
-            document.getElementById(`${campo}`).classList.remove('valido');
-            document.getElementById(`${campo}`).classList.add('invalido');
-            campos[campo] = false;
-        }
+    if (inputUsuario.value === '') {
+        inputUsuario.classList.remove('valido');
+        inputUsuario.classList.add('invalido');
+        document.getElementsByClassName('error-usuario')[0].classList.remove('oculto');
     }
 };
 
@@ -211,20 +208,170 @@ function showPassword() {
     } else {
         input.type = "password";
     }
+};
+
+
+function validarCampo(contenedor, campo, error) {
+    if (contenedor.validity.patternMismatch) {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = false;
+    } else if (contenedor.validity.rangeOverflow) {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = false;
+    } else if (contenedor.validity.rangeUnderflow) {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = false;
+    } else {
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    }
+    if (contenedor.value === '') {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(error)[0].classList.remove('oculto');
+        campos[campo] = false;
+    }
 }
 
+function seleccionDNI(contenedor, campo, error) {
+    if (contenedor.value === "DNI") {
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        inputDocumentacion.disabled = false;
+        inputDocumentacion.setAttribute('pattern', '^[0-9]{8}[a-zA-Z]$');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else if (contenedor.value === "NIE") {
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        inputDocumentacion.disabled = false;
+        inputDocumentacion.setAttribute('pattern', '^[ZYX][0-9]{7}[a-zA-Z]$');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        inputDocumentacion.disabled = true;
+        campos[campo] = false;
+        document.getElementsByClassName(error)[0].classList.remove('oculto');
+    }
+}
 
-inputs.forEach((input) => {
-    input.addEventListener('keyup', validarFormulario);
-    input.addEventListener('blur', validarFormulario);
-});
-selects.forEach((select) => {
-    select.addEventListener('focusout', validarFormulario);
-})
+function validarTipoCuenta(campo, error) {
+    var radio = $('input[type=radio]:checked').length;
+    if (radio == 1) {
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else {
+        document.getElementsByClassName(error)[0].classList.remove('oculto');
+        campos[campo] = false;
+    }
+};
 
-checkboxPassword.addEventListener('click', showPassword);
+function validarEdad(contenedor, campo, error) {
+    var fechaHoy = new Date;
+    fechaHoy = fechaHoy.getFullYear();
+    if ((fechaHoy - contenedor.value) >= 18) {
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(error)[0].classList.remove('oculto');
+        campos[campo] = false;
+    }
+}
+
+function validarAficiones(campo, error) {
+    var checked = $('input[type=checkbox]:checked').length;
+    if (checked >= 2) {
+        document.getElementsByClassName(error)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else if (checked < 2) {
+        document.getElementsByClassName(error)[0].classList.remove('oculto');
+        campos[campo] = false;
+    };
+}
+
+function validarCanal(contenedor, campo, errorRequired, errorUrl) {
+    var iconoCanal = document.getElementsByClassName('icono')[0];
+    if (contenedor.value.includes("https://www.twitch.tv/")) {
+        iconoCanal.classList.remove('fas')
+        iconoCanal.classList.remove('fa-question-circle')
+        iconoCanal.classList.remove('fa-youtube')
+        iconoCanal.classList.remove('fa-instagram')
+        iconoCanal.classList.add('fab')
+        iconoCanal.classList.add('fa-twitch')
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        document.getElementsByClassName(errorUrl)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else if (contenedor.value.includes("https://www.youtube.com/")) {
+        iconoCanal.classList.remove('fas')
+        iconoCanal.classList.remove('fa-question-circle')
+        iconoCanal.classList.remove('fa-twitch')
+        iconoCanal.classList.remove('fa-instagram')
+        iconoCanal.classList.add('fab')
+        iconoCanal.classList.add('fa-youtube')
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        document.getElementsByClassName(errorUrl)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else if (contenedor.value.includes('https://instagram.com/')) {
+        iconoCanal.classList.remove('fas')
+        iconoCanal.classList.remove('fa-question-circle')
+        iconoCanal.classList.remove('fa-youtube')
+        iconoCanal.classList.remove('fa-question-circle')
+        iconoCanal.classList.remove('fa-twitch')
+        iconoCanal.classList.add('fab')
+        iconoCanal.classList.add('fa-instagram')
+        contenedor.classList.remove('invalido');
+        contenedor.classList.add('valido');
+        document.getElementsByClassName(errorUrl)[0].classList.add('oculto');
+        campos[campo] = true;
+    } else if (contenedor.value === '') {
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        document.getElementsByClassName(errorRequired)[0].classList.remove('oculto');
+        document.getElementsByClassName(errorUrl)[0].classList.add('oculto');
+        campos[campo] = false;
+    } else {
+        iconoCanal.classList.remove('fab')
+        iconoCanal.classList.remove('fa-youtube')
+        iconoCanal.classList.remove('fa-twitch')
+        iconoCanal.classList.remove('fa-instagram')
+        iconoCanal.classList.remove('fa-instagram')
+        iconoCanal.classList.add('fas')
+        iconoCanal.classList.add('fa-question-circle')
+        contenedor.classList.remove('valido');
+        contenedor.classList.add('invalido');
+        campos[campo] = false;
+        document.getElementsByClassName(errorRequired)[0].classList.add('oculto');
+        document.getElementsByClassName(errorUrl)[0].classList.remove('oculto');    
+    }
+}
 
 botonEnviar.addEventListener('click', function () {
+    validarUsuario();
+    validarCampo(inputPassword, 'password', 'error-password');
+    validarTipoCuenta('tipoCuenta', 'error-cuenta');
+    validarCampo(inputNombre, 'nombre', 'error-nombre');
+    validarCampo(inputApellidos, 'apellidos', 'error-apellidos');
+    validarCampo(inputTelefono, 'telefono', 'error-telefono');
+    validarCampo(inputCodPostal, 'codPostal', 'error-codPostal');
+    seleccionDNI(selectDocumentacion, 'documentacion', 'error-dni');
+    validarCampo(inputDocumentacion, 'numDocumentacion', 'error-dni');
+    
     if (comprobarCampos()) {
         crearOutput();
         resetearInputsValue();
@@ -264,7 +411,5 @@ function resetearInputsValue() {
 }
 
 function crearOutput() {
-    var username = document.getElementById('nombre').value;
-    var password = document.getElementById('password').value;
-    
+
 }
