@@ -33,8 +33,7 @@ export function crearOutput() {
     contenedorOutput.lastChild.appendChild(createNode('p', 'Teléfono: ' + inputTelefono.value, [], []));
     contenedorOutput.lastChild.appendChild(createNode('p', 'Código Postal: ' + inputCodPostal.value, [], []));
     contenedorOutput.lastChild.appendChild(createNode('p', selectDocumentacion.value + ': ' + inputDocumentacion.value, [], []));
-    contenedorOutput.lastChild.appendChild(createNode('p', 'Tipo cuenta: ' + tipoCuenta.value, [], []));
-    contenedorOutput.lastChild.appendChild(createNode('p', 'Tipo cuenta: ' + tipoCuenta.value, [], []));
+    contenedorOutput.lastChild.appendChild(createNode('p', 'Tipo cuenta: ' + tipoCuenta.id, [], []));
     contenedorOutput.lastChild.appendChild(createNode('p', 'Edad del usuario: ' + edad, [], []));
     contenedorOutput.lastChild.appendChild(createNode('p', 'Aficiones del usuario: ', [], []));
     contenedorOutput.lastChild.appendChild(createNode('ul', '', [], []));
