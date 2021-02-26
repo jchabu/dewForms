@@ -51,3 +51,11 @@ input[id=showPass]{
     display: flex;
     justify-content: space-between;
 }
+.word-counter {
+    font-size: smaller;
+    color: gray;
+}
+.enlinea{
+    display: flex;
+    justify-content: space-between;
+}
