@@ -6,6 +6,9 @@ selectNacimiento.addEventListener('change', function () {
 	validarEdad(selectNacimiento, 'nacimiento', 'error-nacimiento');
 });
 
+/**
+ * Función para rellenar el select desde la fecha seleccionada
+ */
 for (var i = 2010; i >= 1930; i--) {
 	var option = document.createElement('option');
 	option.value = i;

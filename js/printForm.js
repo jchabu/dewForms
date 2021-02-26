@@ -9,7 +9,6 @@ const inputCodPostal = document.getElementById('codpostal');
 const selectDocumentacion = document.getElementById('documentacion');
 const inputDocumentacion = document.getElementById('numDocumentacion');
 const selectNacimiento = document.getElementById('nacimiento');
-const aficiones = document.querySelectorAll('input[name=checkbox]:checked');
 const inputTitulo = document.getElementById('titulo');
 const inputDescripcion = document.getElementById('descripcion');
 const inputCanal = document.getElementById('canal');
@@ -22,6 +21,8 @@ export function crearOutput() {
     fechaHoy = fechaHoy.getFullYear();
     var edad = fechaHoy - selectNacimiento.value;
     var tipoCuenta = document.querySelectorAll('input[name=tipoCuenta]:checked')[0];
+    var aficiones = document.querySelectorAll('input[name=checkbox]:checked');
+    
     contenedorOutput.removeChild(contenedorOutput.lastChild);
     contenedorOutput.appendChild(createNode('div', '', [], []));
     contenedorOutput.lastChild.appendChild(createNode('h1', 'Datos Usuario', ['underline'], []));
