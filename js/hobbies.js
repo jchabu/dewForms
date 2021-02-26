@@ -9,9 +9,9 @@ export function validarAficiones(){
 	var checked = $('input[name=checkbox]:checked').length;
 	if (checked >= 2) {
 		errorHobbie.classList.add('oculto');
-        errorHobbie.textContent = '';
+		errorHobbie.textContent = '';
 	} else if (checked < 2) {
 		errorHobbie.classList.remove('oculto');
-        errorHobbie.textContent = 'Elige al menos dos aficiones';
+		errorHobbie.textContent = 'Elige al menos dos aficiones';
 	}
 }

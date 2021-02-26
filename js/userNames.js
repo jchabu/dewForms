@@ -1,21 +1,21 @@
 export const existingUserNames = [{
-    "userName": "Roby"
+	'userName': 'Roby'
 }, {
-    "userName": "Roderigo"
+	'userName': 'Roderigo'
 }, {
-    "userName": "Babbie"
+	'userName': 'Babbie'
 }, {
-    "userName": "Rozina"
+	'userName': 'Rozina'
 }, {
-    "userName": "Matthiew"
+	'userName': 'Matthiew'
 }, {
-    "userName": "Flora"
+	'userName': 'Flora'
 }, {
-    "userName": "Griffith"
+	'userName': 'Griffith'
 }, {
-    "userName": "Gregoire"
+	'userName': 'Gregoire'
 }, {
-    "userName": "Nedi"
+	'userName': 'Nedi'
 }, {
-    "userName": "Hertha"
+	'userName': 'Hertha'
 }];

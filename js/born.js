@@ -26,7 +26,7 @@ export function validarEdad() {
 	} else {
 		contenedorEdad.classList.remove('valido');
 		contenedorEdad.classList.add('invalido');
-        errorEdad.textContent = 'El usuario debe ser mayor de edad';
+		errorEdad.textContent = 'El usuario debe ser mayor de edad';
 		errorEdad.classList.remove('oculto');
 	}
 }
